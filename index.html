@@ -6,32 +6,49 @@
 <title>Propuesta de visualización: gráfico de líneas multimétrica</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f3; color: #1a1a18; padding: 2rem; }
-  h1 { font-size: 20px; font-weight: 500; margin-bottom: 6px; }
-  .subtitle { font-size: 14px; color: #666; margin-bottom: 28px; }
-  .problem { background: #fff8e6; border-left: 3px solid #BA7517; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #4a3800; margin-bottom: 28px; line-height: 1.6; }
-  .tab-bar { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
-  .tab { padding: 7px 16px; border-radius: 8px; border: 1px solid #ccc; cursor: pointer; font-size: 13px; background: transparent; color: #666; font-family: inherit; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f3; color: #1a1a18; padding: 1.25rem; }
+  h1 { font-size: 18px; font-weight: 500; margin-bottom: 6px; line-height: 1.3; }
+  .subtitle { font-size: 13px; color: #666; margin-bottom: 20px; }
+  .problem { background: #fff8e6; border-left: 3px solid #BA7517; border-radius: 8px; padding: 12px 14px; font-size: 13px; color: #4a3800; margin-bottom: 20px; line-height: 1.6; }
+  .tab-bar { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tab { padding: 7px 13px; border-radius: 8px; border: 1px solid #ccc; cursor: pointer; font-size: 13px; background: transparent; color: #666; font-family: inherit; white-space: nowrap; }
   .tab.active { background: #1a1a18; color: #fff; border-color: #1a1a18; }
   .tab:hover:not(.active) { background: #eee; }
   .section { display: none; }
   .section.visible { display: block; }
-  .card { background: #fff; border: 1px solid #e0e0dc; border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; }
-  .desc { font-size: 13px; color: #666; margin-bottom: 16px; line-height: 1.6; }
-  .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; font-size: 12px; }
+  .card { background: #fff; border: 1px solid #e0e0dc; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+  .desc { font-size: 13px; color: #666; margin-bottom: 14px; line-height: 1.6; }
+  .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; font-size: 12px; }
   .pros { background: #eaf3de; border-radius: 8px; padding: 10px 12px; color: #27500A; }
   .cons { background: #fcebeb; border-radius: 8px; padding: 10px 12px; color: #791F1F; }
   .pros strong, .cons strong { display: block; margin-bottom: 4px; font-size: 11px; letter-spacing: 0.05em; }
-  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 12px; font-size: 12px; color: #666; }
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; font-size: 12px; color: #666; }
   .legend span { display: flex; align-items: center; gap: 5px; }
   .dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
-  .small-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+  .small-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
   .sm-card { background: #fff; border: 1px solid #e0e0dc; border-radius: 10px; padding: 12px 14px; }
   .sm-label { font-size: 12px; color: #888; margin-bottom: 2px; }
   .sm-value { font-size: 20px; font-weight: 500; margin-bottom: 8px; }
   .sm-change { font-size: 11px; margin-top: 4px; }
   .rec-badge { display: inline-block; background: #eaf3de; color: #27500A; border-radius: 6px; font-size: 11px; padding: 3px 10px; margin-bottom: 10px; font-weight: 500; }
-  footer { text-align: center; font-size: 12px; color: #aaa; margin-top: 40px; }
+  footer { text-align: center; font-size: 12px; color: #aaa; margin-top: 32px; }
+
+  /* chart height: shorter on mobile */
+  .chart-wrap { position: relative; width: 100%; height: 260px; }
+
+  @media (min-width: 600px) {
+    body { padding: 2rem; }
+    h1 { font-size: 20px; }
+    .chart-wrap { height: 300px; }
+    .small-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+    .card { padding: 20px 24px; }
+  }
+
+  /* On very small screens, stack pros/cons */
+  @media (max-width: 420px) {
+    .pros-cons { grid-template-columns: 1fr; }
+    .tab { font-size: 12px; padding: 6px 10px; }
+  }
 </style>
 </head>
 <body>
@@ -64,7 +81,7 @@
       <span><span class="dot" style="background:#BA7517"></span>Referidos (der)</span>
       <span><span class="dot" style="background:#E24B4A"></span>Incumplimientos (der)</span>
     </div>
-    <div style="position:relative;width:100%;height:300px;"><canvas id="c1"></canvas></div>
+    <div class="chart-wrap"><canvas id="c1"></canvas></div>
   </div>
 </div>
 
@@ -82,7 +99,7 @@
       <span><span class="dot" style="background:#BA7517"></span>Referidos</span>
       <span><span class="dot" style="background:#E24B4A"></span>Incumplimientos</span>
     </div>
-    <div style="position:relative;width:100%;height:300px;"><canvas id="c2"></canvas></div>
+    <div class="chart-wrap"><canvas id="c2"></canvas></div>
   </div>
 </div>
 
